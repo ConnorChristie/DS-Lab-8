@@ -1,6 +1,5 @@
 package christieck;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -139,6 +138,11 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
      */
     public V put(K key, V value)
     {
+        if (key == null)
+        {
+            throw new NullPointerException();
+        }
+
         Entry entry = new Entry(key, value);
 
         int index = Collections.binarySearch(table, entry);
@@ -148,7 +152,7 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
             return table.set(index, entry).getValue();
         }
 
-        table.add(index, entry);
+        table.add((index + 1) * -1, entry);
 
         return null;
     }
@@ -179,7 +183,9 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
 
         if (containsKey(key))
         {
-            Collections.binarySearch(table, new Entry((K) key, null));
+            int index = Collections.binarySearch(table, new Entry((K) key, null));
+
+            return table.get(index).getValue();
         }
 
         return null;
@@ -192,8 +198,7 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
      */
     public int size()
     {
-        // TODO
-        return 0;
+        return table.size();
     }
 
     /**
@@ -202,7 +207,7 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
      */
     public void clear()
     {
-        // TODO
+        table.clear();
     }
 
     /**
@@ -218,8 +223,14 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
      */
     public boolean containsKey(Object key)
     {
-        // TODO
-        return false;
+        if (key == null)
+        {
+            throw new NullPointerException();
+        }
+
+        int index = Collections.binarySearch(table, new Entry((K) key, null));
+
+        return index >= 0;
     }
 
     /**
@@ -229,8 +240,7 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
      */
     public boolean isEmpty()
     {
-        // TODO
-        return false;
+        return table.isEmpty();
     }
 
     /**
@@ -253,7 +263,21 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
      */
     public V remove(Object key)
     {
-        // TODO
+        if (key == null)
+        {
+            throw new NullPointerException();
+        }
+
+        if (containsKey(key))
+        {
+            int index = Collections.binarySearch(table, new Entry((K) key, null));
+
+            if (index >= 0)
+            {
+                return table.remove(index).getValue();
+            }
+        }
+
         return null;
     }
 
