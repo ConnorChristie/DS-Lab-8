@@ -310,4 +310,128 @@ public class LookupTable<K extends Comparable<? super K>, V> implements Map<K, V
     {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Tests the lookup table class and the entry class
+     *
+     * @param args No use
+     */
+    public static void main(String[] args)
+    {
+        try
+        {
+            testLookupTable();
+            new LookupTable<Character, String>().testLookupTableEntry();
+
+            System.out.println("Successfully passed all tests!");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tests the whole lookup table class
+     *
+     * @throws Exception If one of the test assertions failed
+     */
+    private static void testLookupTable() throws Exception
+    {
+        Map<Character, String> morseChars = new LookupTable<>();
+
+        // Add two characters
+        morseChars.put('A', ".-");
+        morseChars.put('B', "-...");
+
+        try
+        {
+            // Check that adding a value with a null key throws NPE
+            morseChars.put(null, "-.");
+            throw new Exception("Expected null pointer exception to be thrown");
+        } catch (NullPointerException e) { }
+
+        // Check correct size and not empty
+        if (morseChars.size() != 2) throw new Exception("Size does not equal 2");
+        if (morseChars.isEmpty()) throw new Exception("Lookup table should not be empty");
+
+        String val = morseChars.get('B');
+
+        if (!val.equals("-...")) throw new Exception("Got the wrong value");
+
+        try
+        {
+            // Check that getting a value with a null key throws NPE
+            morseChars.get(null);
+            throw new Exception("Expected null pointer exception to be thrown");
+        } catch (NullPointerException e) { }
+
+        // Check if lookup table contains the second value
+        boolean contains = morseChars.containsKey('B');
+
+        if (!contains) throw new Exception("Lookup table should contain the key");
+
+        // Remove the first character
+        String removed = morseChars.remove('A');
+
+        // Check size is 1 and removed correct value
+        if (morseChars.size() != 1) throw new Exception("Size does not equal 1");
+        if (!removed.equals(".-")) throw new Exception("Removed the wrong key value pair");
+
+        // Remove second character
+        removed = morseChars.remove('B');
+
+        // Check is empty and removed correct value
+        if (!morseChars.isEmpty()) throw new Exception("Lookup table should be empty");
+        if (!removed.equals("-...")) throw new Exception("Removed the wrong key value pair");
+
+        // Add two characters
+        morseChars.put('A', ".-");
+        morseChars.put('B', "-...");
+
+        // Check correct size and not empty
+        if (morseChars.size() != 2) throw new Exception("Size does not equal 2");
+
+        morseChars.clear();
+
+        // Check is empty
+        if (!morseChars.isEmpty()) throw new Exception("Lookup table should be empty");
+    }
+
+    /**
+     * Runs all of the entry tests
+     *
+     * @throws Exception If one of the test assertions failed
+     */
+    private void testLookupTableEntry() throws Exception
+    {
+        // Create two entries
+        LookupTable<Character, String>.Entry entry1 = new LookupTable<Character, String>.Entry('A', ".-");
+        LookupTable<Character, String>.Entry entry2 = new LookupTable<Character, String>.Entry('B', "-...");
+        LookupTable<Character, String>.Entry entry3 = new LookupTable<Character, String>.Entry('B', "-.-.");
+
+        // Check correct values got set
+        if (!entry1.getValue().equals(".-")) throw new Exception("Wrong value returned");
+
+        // Check correct keys got set
+        if (!entry1.getKey().equals('A')) throw new Exception("Wrong key returned");
+
+        try
+        {
+            // Check that null key throws NPE
+            new LookupTable<Character, String>.Entry(null, ".-");
+            throw new Exception("Expected null pointer exception to be thrown");
+        } catch (NullPointerException e) {}
+
+        // Check that entries with same key are equal
+        if (!entry2.equals(entry3)) throw new Exception("Expected entries to be equal");
+
+        // Check that entries compare correctly
+        if (entry1.compareTo(entry3) != -1) throw new Exception("Expected entries to compare correctly");
+
+        // Set value of entry
+        entry2.setValue(".-.-.-.");
+
+        // Check value was set
+        if (!entry2.getValue().equals(".-.-.-.")) throw new Exception("Wrong value returned");
+    }
 }

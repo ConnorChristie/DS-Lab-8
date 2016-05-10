@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * The main driver class that encodes the specified file into the output file
+ */
 public class MorseEncoder
 {
-    private static final String MORSE_CHARS_FILE = "morsecode.txt";
-
     private static Scanner input;
     private static Map<Character, String> morseChars;
+
+    private static final String MORSE_CHARS_FILE = "morsecode.txt";
 
     public MorseEncoder()
     {
@@ -51,10 +54,10 @@ public class MorseEncoder
             Files.write(outputFile.toPath(), lines);
         } catch (FileNotFoundException e)
         {
-            System.out.println("The file specified could not be found.");
+            System.err.println("The input file specified could not be found.");
         } catch (IOException e)
         {
-            System.out.println("Unable to write to the out file.");
+            System.err.println("Unable to write to the output file.");
         }
     }
 
@@ -124,7 +127,7 @@ public class MorseEncoder
             }
         } catch (FileNotFoundException e)
         {
-            System.out.println("The file specified could not be found.");
+            System.err.println("The file specified could not be found.");
         }
 
         return morseChars;
